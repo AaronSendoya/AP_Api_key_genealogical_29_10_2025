@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.UUID;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FamilyPlace implements Parcelable {
     public final String id;
@@ -59,6 +61,50 @@ public class FamilyPlace implements Parcelable {
 
     public LatLng toLatLng() {
         return new LatLng(lat, lng);
+    }
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("id", id);
+        o.put("name", name);
+        o.put("relation", relation);
+        o.put("address", address);
+        o.put("lat", lat);
+        o.put("lng", lng);
+        try { o.put("colorName", colorName); } catch (Throwable ignored) {}
+        return o;
+    }
+
+    public static FamilyPlace fromJson(JSONObject o) throws JSONException {
+        String jid;
+        String jname;
+        String jrelation;
+        String jaddress;
+        double jlat;
+        double jlng;
+        String jcolor = null;
+
+        try {
+            jid = o.optString("id", UUID.randomUUID().toString());
+        } catch (Throwable t) { jid = UUID.randomUUID().toString(); }
+        try {
+            jname = o.optString("name", "");
+        } catch (Throwable t) { jname = ""; }
+        try {
+            jrelation = o.optString("relation", "");
+        } catch (Throwable t) { jrelation = ""; }
+        try {
+            jaddress = o.optString("address", "");
+        } catch (Throwable t) { jaddress = ""; }
+        jlat = o.getDouble("lat");
+        jlng = o.getDouble("lng");
+        try {
+            String cn = o.optString("colorName", null);
+            if (cn != null && cn.length() == 0) cn = null;
+            jcolor = cn;
+        } catch (Throwable ignored) {}
+
+        return new FamilyPlace(jid, jname, jrelation, jaddress, jlat, jlng, jcolor);
     }
 
     @Override

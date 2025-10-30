@@ -3,6 +3,7 @@ package com.example.app_api_key;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -21,11 +22,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, FormFragment.OnPlaceAddedListener {
 
     private static final String KEY_FAMILY_PLACES = "key_family_places";
     private static final int REQ_LOCATION = 101;
+    private static final String PREFS = "genealogico_prefs";
+    private static final String KEY_PLACES = "family_places_json";
 
     private GoogleMap myMap;
     private final ArrayList<FamilyPlace> familyPlaces = new ArrayList<>();
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .replace(R.id.map_container, mapFragment)
                     .commitNow();
         }
+        // Restore persisted places before the map renders
+        restorePlaces();
         mapFragment.getMapAsync(this);
     }
 
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             myMap.clear();
         }
         Toast.makeText(this, "Se eliminaron todas las direcciones", Toast.LENGTH_SHORT).show();
+        persistPlaces();
     }
 
     @Override
@@ -130,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             renderAllMarkers();
         }
         Toast.makeText(this, "Se eliminó la última dirección", Toast.LENGTH_SHORT).show();
+        persistPlaces();
     }
 
     private float getHueForRelation(String relation) {
@@ -164,6 +173,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .icon(BitmapDescriptorFactory.defaultMarker(hue));
         myMap.addMarker(options);
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.toLatLng(), 12f));
+        persistPlaces();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        persistPlaces();
+    }
+
+    private void persistPlaces() {
+        try {
+            JSONArray arr = new JSONArray();
+            for (FamilyPlace p : familyPlaces) {
+                try { arr.put(p.toJson()); } catch (Exception ignored) {}
+            }
+            SharedPreferences sp = getSharedPreferences(PREFS, MODE_PRIVATE);
+            sp.edit().putString(KEY_PLACES, arr.toString()).apply();
+        } catch (Exception ignored) {}
+    }
+
+    private void restorePlaces() {
+        try {
+            SharedPreferences sp = getSharedPreferences(PREFS, MODE_PRIVATE);
+            String json = sp.getString(KEY_PLACES, "[]");
+            JSONArray arr = new JSONArray(json);
+            familyPlaces.clear();
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject o = arr.getJSONObject(i);
+                try { familyPlaces.add(FamilyPlace.fromJson(o)); } catch (Exception ignored) {}
+            }
+        } catch (Exception ignored) {}
     }
 
     private float getHueForColorName(String name) {
