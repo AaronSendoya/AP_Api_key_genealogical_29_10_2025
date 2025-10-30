@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_s">8dp</dimen>
+    <dimen name="spacing_m">12dp</dimen>
+    <dimen name="spacing_l">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+
+    <dimen name="corner_l">16dp</dimen>
+    <dimen name="elevation_card">4dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="input_height">48dp</dimen>
+</resources>
+

@@ -2,4 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Warm palette + subtle teal accent -->
+    <color name="colorPrimary">#FF8A00</color>
+    <color name="colorPrimaryVariant">#FFB300</color>
+    <color name="colorSecondary">#2CB1A6</color>
+    <color name="colorOnPrimary">#FFFFFFFF</color>
+    <color name="colorSurface">#FFF7EE</color>
+    <color name="colorOnSurface">#2E2E2E</color>
+    <color name="colorOutline">#E6D7C9</color>
+
+    <!-- Input surface -->
+    <color name="colorInputBackground">#FFFFFFFF</color>
 </resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="marker_colors">
+        <item>Automático</item>
+        <item>Rojo</item>
+        <item>Azul</item>
+        <item>Verde</item>
+        <item>Naranja</item>
+        <item>Violeta</item>
+        <item>Magenta</item>
+        <item>Cian</item>
+        <item>Amarillo</item>
+        <item>Rosa</item>
+        <item>Azul claro</item>
+    </string-array>
+</resources>
+
